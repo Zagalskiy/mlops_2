@@ -13,7 +13,6 @@ os.makedirs(os.path.join("data", "stage2"), exist_ok=True)
 
 def process_data(fd_in, fd_out):
     arr_age = []
-    arr_education = []
     arr_education_num = []
     arr_sex = []
     arr_capital_gain = []
@@ -36,8 +35,14 @@ def process_data(fd_in, fd_out):
         if arr_age[i] == 0:
             arr_age[i] = round(average_age, 2)
 
+    min_length = min(len(arr_age), len(arr_education_num), len(arr_sex), len(arr_capital_gain))
+    arr_age = arr_age[:min_length]
+    arr_education_num = arr_education_num[:min_length]
+    arr_sex = arr_sex[:min_length]
+    arr_capital_gain = arr_capital_gain[:min_length]
+
     for p_age, p_education_num, p_sex, p_capital_gain in zip(arr_age, arr_education_num, arr_sex, arr_capital_gain):
-        fd_out.write("{},{},{},{},{},{}\n".format(p_age, p_education_num, p_sex, p_capital_gain))
+        fd_out.write(f"{p_age},{p_education_num},{p_sex},{p_capital_gain}\n")
 
 with io.open(f_input, encoding="utf8") as fd_in:
     with io.open(f_output, "w", encoding="utf8") as fd_out:
