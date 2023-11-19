@@ -51,3 +51,74 @@ stages:
       md5: cde0c81fd28cee6288c65fca4c415bc2.dir
       size: 417390
       nfiles: 1
+  text_to_numeric:
+    cmd: python3 scripts/data_scripts/change_text_to_numeric.py data/stage2/train.csv
+    deps:
+    - path: data/stage2/train.csv
+      hash: md5
+      md5: 2242ff1e1dfaae0c6860c9c72aae3091
+      size: 565184
+    - path: scripts/data_scripts/change_text_to_numeric.py
+      hash: md5
+      md5: c90e83aaa05a81cfae12b5f5d99bb515
+      size: 1419
+    outs:
+    - path: data/stage3
+      hash: md5
+      md5: cde0c81fd28cee6288c65fca4c415bc2.dir
+      size: 417390
+      nfiles: 1
+  split:
+    cmd: python3 scripts/data_scripts/train_test_split.py data/stage3/train.csv
+    deps:
+    - path: data/stage3/train.csv
+      hash: md5
+      md5: 265ba65c9a4570490f0ce0cc5c4d27f2
+      size: 417390
+    - path: scripts/data_scripts/train_test_split.py
+      hash: md5
+      md5: 46f926ceed61e51d281d09978b837d8f
+      size: 950
+    params:
+      params.yaml:
+        split.split_ratio: 0.3
+  train:
+    cmd: python3 scripts/model_scripts/dt.py data/stage4/train.csv model.pkl
+    deps:
+    - path: data/stage4/train.csv
+      hash: md5
+      md5: 1bb9bfab5465d9b932cf5890392b4d88
+      size: 292245
+    - path: scripts/model_scripts/dt.py
+      hash: md5
+      md5: ccf42454413e2cc1c9d3d3bfa8f8b109
+      size: 725
+    params:
+      params.yaml:
+        train.max_depth: 5
+        train.seed: 42
+    outs:
+    - path: models/model.pkl
+      hash: md5
+      md5: 889d797df775f4c95bf296e489d5445d
+      size: 10647
+  evaluate:
+    cmd: python3 scripts/model_scripts/evaluate.py data/stage4/test.csv models/model.pkl
+    deps:
+    - path: data/stage4/test.csv
+      hash: md5
+      md5: c23c8afc2ddbe017130f0dacedb5fc1b
+      size: 125129
+    - path: models/model.pkl
+      hash: md5
+      md5: 889d797df775f4c95bf296e489d5445d
+      size: 10647
+    - path: scripts/model_scripts/evaluate.py
+      hash: md5
+      md5: 716d144619335c2eaf78b3a770bee98a
+      size: 565
+    outs:
+    - path: evaluate/score.json
+      hash: md5
+      md5: e5ff48ef67dc0301f71ed95a82347d31
+      size: 29
