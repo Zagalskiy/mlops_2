@@ -11,3 +11,6 @@ def hello():
 def predict(age, education_num, sex, capital_gain):
     with open("./models/model.pkl", "rb") as fd:
         clf = pickle.load(fd)
+
+    prediction = int(clf.predict([[age, education_num, sex, capital_gain]])[0])
+    return(jsonify({"survived": prediction}))
